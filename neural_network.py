@@ -18,7 +18,27 @@ class Neural_Network(object):
         yHat = self.sigmoid(self.z3)
         return yHat
 
+    def costFunction(self, X, y):
+        #Copmpute Costfunction
+        yHat = self.forward(X)
+        return 0.5*np.sum((y-yHat)**2)
+
+    def costFunctionPrime(self, X, y):
+        #Copmpute derivative with repsect to W1 and W2
+        self.yHat = self.forward(X)
+
+        delta3 = np.multiply(-(y-self.yHat), self.sigmoidPrime(self.z3))
+        dJdW2 = np.dot(self.a2.T, delta3)
+
+        delta2 = np.dot(delta3, self.W2.T)*self.sigmoidPrime(self.z2)
+        dJdW1 = np.dot(X.T, delta2)
+
+        return dJdW1, dJdW2
+
     def sigmoid(self,z):
         #Applied sigmoid activation function
         return 1/(1 + np.exp(-z))
 
+    def sigmoidPrime(self,z):
+        #Derivative of sigmoid activation function with respect to z
+        return np.exp(-z)/(1 + np.exp(-z))**2
